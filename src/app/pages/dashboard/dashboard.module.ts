@@ -33,7 +33,7 @@ import { FormsModule } from '@angular/forms';
 
 import { AngularFireModule} from 'angularfire2';
 import { firebaseConfig } from '../../../environments/environment';
-import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { AngularFireDatabaseModule} from 'angularfire2/database';
 @NgModule({
   imports: [
     FormsModule,
@@ -51,6 +51,7 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
     NgxEchartsModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule,
+  
   ],
   declarations: [
     DashboardComponent,
@@ -70,5 +71,6 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
     TrafficComponent,
     TrafficChartComponent,
   ],
+
 })
 export class DashboardModule { }
