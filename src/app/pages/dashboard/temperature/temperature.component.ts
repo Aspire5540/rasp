@@ -1,4 +1,4 @@
-import { Component, OnDestroy,OnInit } from '@angular/core';
+import { Component, OnDestroy} from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { Temperature, TemperatureHumidityData } from '../../../@core/data/temperature-humidity';
 import { takeWhile } from 'rxjs/operators';
