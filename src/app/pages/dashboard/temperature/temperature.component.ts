@@ -43,7 +43,7 @@ export class TemperatureComponent implements OnDestroy {
       .subscribe(config => {
       this.theme = config.variables.temperature;
     });
-
+ 
     forkJoin(
       this.temperatureHumidityService.getTemperatureData(),
       this.temperatureHumidityService.getHumidityData(),
@@ -55,26 +55,15 @@ export class TemperatureComponent implements OnDestroy {
         this.humidityData = humidityData;
         this.humidity = this.humidityData.value;
       });
-  }
-  ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
-    this.wikiList.snapshotChanges().map(actions => {
-      return actions.map(action => ({ key: action.key, value: action.payload.val() }));
-      }).subscribe(items => {
-      this.wikis = items.reverse();
-      for(this.loop=1;this.loop<this.wikis.length;this.loop++){
-        this.element=this.wikis[this.loop];
-        if (Object.keys(this.element.value)[0]=="env"){
-          this.temperature =this.element.value.env[this.element.value.env.length-1].value[0];
-          this.humidity =this.element.value.env[this.element.value.env.length-1].value[1];
-          break
-        }
-      }
+     
+      this.temperatureHumidityService.currentMessage.subscribe(msg=>{
+        this.temperature=msg[0];
+        this.humidity=msg[1];
       
-      //this.temperature=this.wikis[this.wikis.length-1].value.ligth
       });
+      
   }
+
   ngOnDestroy() {
     this.alive = false;
   }

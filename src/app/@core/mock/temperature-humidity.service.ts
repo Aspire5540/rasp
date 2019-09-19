@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { of as observableOf,  Observable } from 'rxjs';
 import { TemperatureHumidityData, Temperature } from '../data/temperature-humidity';
-
+import { BehaviorSubject } from 'rxjs';
 @Injectable()
 export class TemperatureHumidityService extends TemperatureHumidityData {
+  private messageSource = new BehaviorSubject('');
+  currentMessage = this.messageSource.asObservable();
 
   private temperatureDate: Temperature = {
     value: 40,
@@ -23,5 +25,9 @@ export class TemperatureHumidityService extends TemperatureHumidityData {
 
   getHumidityData(): Observable<Temperature> {
     return observableOf(this.humidityDate);
+  }
+  changeMessage(msg) {
+    console.log(msg);
+    this.messageSource.next(msg);
   }
 }
