@@ -5,7 +5,7 @@ import { SolarData } from '../../@core/data/solar';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import 'rxjs/add/operator/map'
 import { TemperatureHumidityData} from '../../@core/data/temperature-humidity';
-
+import {ElectricityData} from '../../@core/data/electricity'
 interface CardSettings {
   title: string;
   iconClass: string;
@@ -95,7 +95,7 @@ export class DashboardComponent implements OnDestroy,OnInit {
 
 
 
-  constructor(private temperatureHumidityService: TemperatureHumidityData,private db: AngularFireDatabase,private themeService: NbThemeService,
+  constructor(private electricityService: ElectricityData,private temperatureHumidityService: TemperatureHumidityData,private db: AngularFireDatabase,private themeService: NbThemeService,
               private solarService: SolarData,
               ) {
 
@@ -118,22 +118,43 @@ export class DashboardComponent implements OnDestroy,OnInit {
     //Add 'implements OnInit' to the class.
     var tempurature;
     var humidity;
+    var DataDate;
+    var currentDate;
+    var meterArry;
+    var meterMap;
+
     this.wikiList.snapshotChanges().map(actions => {
       return actions.map(action => ({ key: action.key, value: action.payload.val() }));
       }).subscribe(items => {
       this.wikis = items.reverse();
-      for(this.loop=1;this.loop<this.wikis.length;this.loop++){
+      console.log(this.wikis);
+      for(this.loop=0;this.loop<this.wikis.length;this.loop++){
         this.element=this.wikis[this.loop];
         if (Object.keys(this.element.value)[0]=="env"){
           tempurature =this.element.value.env[this.element.value.env.length-1].value[0];
           humidity =this.element.value.env[this.element.value.env.length-1].value[1];
           this.temperatureHumidityService.changeMessage([tempurature,humidity]);
+          DataDate=Date.parse(this.element.value.env[this.element.value.env.length-1].timestamp);
+          currentDate=new Date().getTime();
+          console.log((currentDate-DataDate)/(1000*60))
           break
         }
       }
-      
+      for(this.loop=1;this.loop<this.wikis.length;this.loop++){
+        this.element=this.wikis[this.loop];
+        if (Object.keys(this.element.value)[0]=="meter"){
+          meterArry=this.element.value.meter;
+          meterMap=meterArry.map((p, index) => ({
+            label: index,
+            value: p.value[0],
+          }));
+          console.log(meterMap);
+        }
+      }
+      this.electricityService.changeMessage(meterMap);
       //this.temperature=this.wikis[this.wikis.length-1].value.ligth
       });
+      
   }
   ngOnDestroy() {
     this.alive = false;

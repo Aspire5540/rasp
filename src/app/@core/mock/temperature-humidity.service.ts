@@ -27,7 +27,6 @@ export class TemperatureHumidityService extends TemperatureHumidityData {
     return observableOf(this.humidityDate);
   }
   changeMessage(msg) {
-    console.log(msg);
     this.messageSource.next(msg);
   }
 }

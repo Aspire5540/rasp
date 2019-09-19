@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { of as observableOf, Observable } from 'rxjs';
 import { Electricity, ElectricityChart, ElectricityData } from '../data/electricity';
-
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class ElectricityService extends ElectricityData {
-
+  private messageSource = new BehaviorSubject('');
+  currentMessage = this.messageSource.asObservable();
   private listData: Electricity[] = [
     {
       title: '2015',
@@ -87,11 +88,6 @@ export class ElectricityService extends ElectricityData {
       value: p,
     }));
 
-
-
-
-
-
     
   }
 
@@ -101,5 +97,9 @@ export class ElectricityService extends ElectricityData {
 
   getChartData(): Observable<ElectricityChart[]> {
     return observableOf(this.chartData);
+  }
+  changeMessage(msg) {
+    console.log(msg);
+    this.messageSource.next(msg);
   }
 }

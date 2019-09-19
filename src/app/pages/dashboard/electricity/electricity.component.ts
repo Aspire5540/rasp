@@ -19,7 +19,7 @@ export class ElectricityComponent implements OnDestroy {
 
   type = 'week';
   types = ['week', 'month', 'year'];
-
+  gdata:ElectricityChart[];
   currentTheme: string;
   themeSubscription: any;
 
@@ -40,6 +40,7 @@ export class ElectricityComponent implements OnDestroy {
         this.listData = listData;
         this.chartData = chartData;
       });
+
   }
 
   ngOnDestroy() {

@@ -1,8 +1,8 @@
 import { delay, takeWhile } from 'rxjs/operators';
-import { AfterViewInit, Component, Input, OnDestroy,OnInit  } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy} from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { LayoutService } from '../../../../@core/utils';
-import { ElectricityChart } from '../../../../@core/data/electricity';
+import { ElectricityChart,ElectricityData } from '../../../../@core/data/electricity';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import 'rxjs/add/operator/map'
 
@@ -17,7 +17,7 @@ import 'rxjs/add/operator/map'
     </div>
   `,
 })
-export class ElectricityChartComponent implements AfterViewInit, OnDestroy,OnInit {
+export class ElectricityChartComponent implements AfterViewInit, OnDestroy {
 
   private alive = true;
 
@@ -32,7 +32,7 @@ export class ElectricityChartComponent implements AfterViewInit, OnDestroy,OnIni
  loop : number;
  element:any;
 
-  constructor(private db: AngularFireDatabase,private theme: NbThemeService,
+  constructor(private electricityService: ElectricityData,private db: AngularFireDatabase,private theme: NbThemeService,
               private layoutService: LayoutService) {
     this.layoutService.onChangeLayoutSize()
       .pipe(
@@ -41,33 +41,14 @@ export class ElectricityChartComponent implements AfterViewInit, OnDestroy,OnIni
       .subscribe(() => this.resizeChart());
     this.wikiList = db.list('PEA/substation/team_03');
 
+    this.electricityService.currentMessage.subscribe(msg=>{
+      console.log(msg);
+      this.data=msg;
+      this.loadgraph()
+    });
 
   }
-  ngOnInit(){
-    var meterArry;
-    var meterMap;
-    this.wikiList.snapshotChanges().map(actions => {
-      return actions.map(action => ({ key: action.key, value: action.payload.val() }));
-      }).subscribe(items => {
-      this.wikis = items.reverse();
-      for(this.loop=1;this.loop<this.wikis.length;this.loop++){
-        this.element=this.wikis[this.loop];
-        if (Object.keys(this.element.value)[0]=="meter"){
-          meterArry=this.element.value.meter;
-          meterMap=meterArry.map((p, index) => ({
-            label: index,
-            value: p.value[0],
-          }));
-          console.log(meterMap);
-          this.data=meterMap;
-          this.loadgraph()
-        }
-      }
-      });
-      
-  
-     
-  }
+ 
   loadgraph(){
     this.theme.getJsTheme()
       .pipe(
