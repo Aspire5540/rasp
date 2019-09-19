@@ -17,7 +17,7 @@ import 'rxjs/add/operator/map'
     </div>
   `,
 })
-export class ElectricityChartComponent implements AfterViewInit, OnDestroy {
+export class ElectricityChartComponent implements AfterViewInit, OnDestroy,OnInit {
 
   private alive = true;
 
@@ -55,7 +55,7 @@ export class ElectricityChartComponent implements AfterViewInit, OnDestroy {
         if (Object.keys(this.element.value)[0]=="meter"){
           meterArry=this.element.value.meter;
           meterMap=meterArry.map((p, index) => ({
-            label: p.timestamp,
+            label: index,
             value: p.value[0],
           }));
           console.log(meterMap);
@@ -102,7 +102,7 @@ export class ElectricityChartComponent implements AfterViewInit, OnDestroy {
             backgroundColor: eTheme.tooltipBg,
             borderColor: eTheme.tooltipBorderColor,
             borderWidth: 1,
-            formatter: '{c0} kWh',
+            formatter: '{c0} kW',
             extraCssText: eTheme.tooltipExtraCss,
           },
           xAxis: {
@@ -130,7 +130,7 @@ export class ElectricityChartComponent implements AfterViewInit, OnDestroy {
               show: false,
             },
             axisLabel: {
-              show: true,
+              show: false,
             },
             axisTick: {
               show: false,
@@ -188,7 +188,7 @@ export class ElectricityChartComponent implements AfterViewInit, OnDestroy {
               },
               data: this.data.map(i => i.value),
             },
-
+            /*
             {
               type: 'line',
               smooth: true,
@@ -210,7 +210,7 @@ export class ElectricityChartComponent implements AfterViewInit, OnDestroy {
                 },
               },
               data: this.data.map(i => i.value),
-            },
+            },*/
           ],
         };
     });
@@ -250,7 +250,7 @@ export class ElectricityChartComponent implements AfterViewInit, OnDestroy {
             backgroundColor: eTheme.tooltipBg,
             borderColor: eTheme.tooltipBorderColor,
             borderWidth: 1,
-            formatter: '{c0} kWh',
+            formatter: '{c0} kW',
             extraCssText: eTheme.tooltipExtraCss,
           },
           xAxis: {

@@ -21,13 +21,13 @@ export class DashboardComponent implements OnDestroy {
 
   solarValue: number;
   lightCard: CardSettings = {
-    title: 'Light',
-    iconClass: 'nb-lightbulb',
+    title: 'Tempureture/Humunity',
+    iconClass: 'nb-snowy-circled',
     type: 'primary',
   };
   rollerShadesCard: CardSettings = {
-    title: 'Roller Shades',
-    iconClass: 'nb-roller-shades',
+    title: 'Power Sensor',
+    iconClass: 'nb-power-circled',
     type: 'success',
   };
   wirelessAudioCard: CardSettings = {
@@ -46,8 +46,8 @@ export class DashboardComponent implements OnDestroy {
   commonStatusCardsSet: CardSettings[] = [
     this.lightCard,
     this.rollerShadesCard,
-    this.wirelessAudioCard,
-    this.coffeeMakerCard,
+    //this.wirelessAudioCard,
+    //this.coffeeMakerCard,
   ];
 
   statusCardsByThemes: {
