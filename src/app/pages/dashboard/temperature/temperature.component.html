@@ -18,7 +18,7 @@
           </div>
         </ngx-temperature-dragger>
       </div>
-
+      <!--
       <nb-radio-group [(ngModel)]="temperatureMode" name="temperature-mode">
         <nb-radio value="cool">
           <i class="nb-snowy-circled"></i>
@@ -33,6 +33,7 @@
           <i class="nb-loop-circled"></i>
         </nb-radio>
       </nb-radio-group>
+      -->
     </nb-tab>
 
     <nb-tab tabTitle="Humidity">
@@ -41,15 +42,16 @@
         <ngx-temperature-dragger [(value)]="humidity" (power)="humidityOff = !$event"
                                  [min]="humidityData.min" [max]="humidityData.max" [disableArcColor]="theme.arcEmpty"
                                  [fillColors]="theme.arcFill" [thumbBg]="theme.thumbBg" [thumbBorderColor]="theme.thumbBorder">
-
+          <!--
           <div class="slider-value-container"  [ngClass]="{ 'off': humidityOff }">
             <div class="value humidity h1">
               {{ humidityOff ? '--' : (humidity | ngxRound) }}
             </div>
           </div>
+          -->
         </ngx-temperature-dragger>
       </div>
-
+      <!--
       <nb-radio-group [(ngModel)]="humidityMode" name="humidity-mode">
         <nb-radio value="cool">
           <i class="nb-snowy-circled"></i>
@@ -64,6 +66,7 @@
           <i class="nb-loop-circled"></i>
         </nb-radio>
       </nb-radio-group>
+    -->
     </nb-tab>
   </nb-tabset>
 </nb-card>
