@@ -26,6 +26,11 @@ export class ContactsComponent implements OnDestroy {
         this.contacts = contacts;
         this.recent = recent;
       });
+      this.userService.currentMessage.subscribe(msg=>{
+        this.contacts=msg[0];
+        this.recent=msg[1];
+        
+      })
   }
 
   ngOnDestroy() {

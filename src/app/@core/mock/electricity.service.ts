@@ -99,7 +99,6 @@ export class ElectricityService extends ElectricityData {
     return observableOf(this.chartData);
   }
   changeMessage(msg) {
-    console.log(msg);
     this.messageSource.next(msg);
   }
 }

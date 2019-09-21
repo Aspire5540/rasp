@@ -16,13 +16,13 @@ export class ElectricityComponent implements OnDestroy {
 
   listData: Electricity[];
   chartData: ElectricityChart[];
-
+  peakLoad:number;
   type = 'week';
   types = ['week', 'month', 'year'];
   gdata:ElectricityChart[];
   currentTheme: string;
   themeSubscription: any;
-
+  valArry=[];
   constructor(private electricityService: ElectricityData,
               private themeService: NbThemeService) {
     this.themeService.getJsTheme()
@@ -40,7 +40,10 @@ export class ElectricityComponent implements OnDestroy {
         this.listData = listData;
         this.chartData = chartData;
       });
-
+      this.electricityService.currentMessage.subscribe(msg=>{
+        //msg.map(p=>this.valArry.push(p));
+        this.peakLoad=msg[1];
+      });
   }
 
   ngOnDestroy() {

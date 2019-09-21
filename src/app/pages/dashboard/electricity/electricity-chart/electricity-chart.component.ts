@@ -22,7 +22,7 @@ export class ElectricityChartComponent implements AfterViewInit, OnDestroy {
   private alive = true;
 
   //@Input() data: ElectricityChart[];
-  data=[];
+  data: ElectricityChart[];
   option: any;
   echartsIntance: any;
  //Include xxxx
@@ -42,8 +42,7 @@ export class ElectricityChartComponent implements AfterViewInit, OnDestroy {
     this.wikiList = db.list('PEA/substation/team_03');
 
     this.electricityService.currentMessage.subscribe(msg=>{
-      console.log(msg);
-      this.data=msg;
+      this.data=msg[0];
       this.loadgraph()
     });
 

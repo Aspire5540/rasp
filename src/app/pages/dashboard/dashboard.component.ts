@@ -5,7 +5,8 @@ import { SolarData } from '../../@core/data/solar';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import 'rxjs/add/operator/map'
 import { TemperatureHumidityData} from '../../@core/data/temperature-humidity';
-import {ElectricityData} from '../../@core/data/electricity'
+import {ElectricityData} from '../../@core/data/electricity';
+import {UserData} from '../../@core/data/users';
 interface CardSettings {
   title: string;
   iconClass: string;
@@ -92,11 +93,12 @@ export class DashboardComponent implements OnDestroy,OnInit {
  lastTemp : number;
  loop : number;
  element:any;
-
-
+ maxLoad:number;
+ doorArry=[];
+ motionArry=[];
 
   constructor(private electricityService: ElectricityData,private temperatureHumidityService: TemperatureHumidityData,private db: AngularFireDatabase,private themeService: NbThemeService,
-              private solarService: SolarData,
+              private solarService: SolarData,private userService: UserData
               ) {
 
     this.wikiList = db.list('PEA/substation/team_03');
@@ -111,7 +113,7 @@ export class DashboardComponent implements OnDestroy,OnInit {
       .subscribe((data) => {
         this.solarValue = data;
       });
-      this.lightCard.on=false;
+     
   }
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -122,12 +124,18 @@ export class DashboardComponent implements OnDestroy,OnInit {
     var currentDate;
     var meterArry;
     var meterMap;
-
+    var dTime;
+    var maxV=0;
+    var fstLoop=false;
+    
+    
+    var temp;
     this.wikiList.snapshotChanges().map(actions => {
       return actions.map(action => ({ key: action.key, value: action.payload.val() }));
       }).subscribe(items => {
       this.wikis = items.reverse();
-      console.log(this.wikis);
+      this.doorArry=[];
+      this.motionArry=[];
       for(this.loop=0;this.loop<this.wikis.length;this.loop++){
         this.element=this.wikis[this.loop];
         if (Object.keys(this.element.value)[0]=="env"){
@@ -136,23 +144,67 @@ export class DashboardComponent implements OnDestroy,OnInit {
           this.temperatureHumidityService.changeMessage([tempurature,humidity]);
           DataDate=Date.parse(this.element.value.env[this.element.value.env.length-1].timestamp);
           currentDate=new Date().getTime();
-          console.log((currentDate-DataDate)/(1000*60))
+          dTime=(currentDate-DataDate)/(1000*60); //in min.
+          if (dTime>20){
+            this.lightCard.on=false;
+          }else{
+            this.lightCard.on=true;
+          }
           break
         }
       }
-      for(this.loop=1;this.loop<this.wikis.length;this.loop++){
+      fstLoop=true;
+      for(this.loop=0;this.loop<this.wikis.length;this.loop++){
         this.element=this.wikis[this.loop];
+        
         if (Object.keys(this.element.value)[0]=="meter"){
+
           meterArry=this.element.value.meter;
+          if (fstLoop){
+           
+            DataDate=Date.parse(meterArry[meterArry.length-1].timestamp);
+            currentDate=new Date().getTime();
+            dTime=(currentDate-DataDate)/(1000*60); //in min.
+            if (dTime>20){
+              this.rollerShadesCard.on=false;
+            }else{
+              this.rollerShadesCard.on=true;
+            }
+            fstLoop=false;
+          }
+          meterArry.forEach(element => {
+            if(maxV<(element.value[0]+element.value[1]+element.value[2]).toFixed(2)){
+              maxV=(element.value[0]+element.value[1]+element.value[2]).toFixed(2);
+            }
+          });
+         
           meterMap=meterArry.map((p, index) => ({
             label: index,
-            value: p.value[0],
+            value: (p.value[0]+p.value[1]+p.value[2]).toFixed(2),
           }));
-          console.log(meterMap);
+          
+        }else if (Object.keys(this.element.value)[0]=="door"){
+          temp=this.element.value.door;
+          temp=temp.reverse();
+          temp.forEach(element => {
+            this.doorArry.push({ user:{ name: 'Room 1', picture: 'assets/images/door2.png'}, type: 'Door open', time: element.timestamp});
+          });
+    
+        }else if (Object.keys(this.element.value)[0]=="motion"){
+          temp=this.element.value.motion;
+          temp=temp.reverse();
+          temp.forEach(element => {
+            this.motionArry.push({user:{ name: 'Camera 1', picture: 'assets/images/motion.png'}, type: 'motion', time: element.timestamp});
+            
+              
+          });
         }
+        
       }
-      this.electricityService.changeMessage(meterMap);
-      //this.temperature=this.wikis[this.wikis.length-1].value.ligth
+      
+      this.userService.changeMessage([this.doorArry,this.motionArry]);
+      this.electricityService.changeMessage([meterMap,maxV]);
+      
       });
       
   }

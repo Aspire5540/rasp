@@ -1,20 +1,23 @@
 import { of as observableOf,  Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Contacts, RecentUsers, UserData } from '../data/users';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class UserService extends UserData {
 
   private time: Date = new Date;
+  private messageSource = new BehaviorSubject('');
+  currentMessage = this.messageSource.asObservable();
 
   private users = {
-    nick: { name: 'Nick Jones', picture: 'assets/images/nick.png' },
+    nick: { name: '2019-08-16 14:29:05', picture: 'assets/images/door.jpg' },
     eva: { name: 'Eva Moor', picture: 'assets/images/eva.png' },
     jack: { name: 'Jack Williams', picture: 'assets/images/jack.png' },
     lee: { name: 'Lee Wong', picture: 'assets/images/lee.png' },
     alan: { name: 'Alan Thompson', picture: 'assets/images/alan.png' },
     kate: { name: 'Kate Martinez', picture: 'assets/images/kate.png' },
-  };
+  };ng
   private types = {
     mobile: 'mobile',
     home: 'home',
@@ -49,5 +52,9 @@ export class UserService extends UserData {
 
   getRecentUsers(): Observable<RecentUsers[]> {
     return observableOf(this.recentUsers);
+  }
+  changeMessage(msg) {
+    this.messageSource.next(msg);
+    
   }
 }
