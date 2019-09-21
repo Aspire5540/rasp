@@ -1,4 +1,4 @@
-import {Component,OnInit,OnDestroy} from '@angular/core';
+import {Component,OnInit,OnDestroy, ModuleWithComponentFactories} from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators' ;
 import { SolarData } from '../../@core/data/solar';
@@ -187,14 +187,14 @@ export class DashboardComponent implements OnDestroy,OnInit {
           temp=this.element.value.door;
           temp=temp.reverse();
           temp.forEach(element => {
-            this.doorArry.push({ user:{ name: 'Room 1', picture: 'assets/images/door2.png'}, type: 'Door open', time: element.timestamp});
+            this.doorArry.push({ user:{ name: 'Room #1', picture: 'assets/images/door2.png'}, type: 'Door open', time: element.timestamp});
           });
     
         }else if (Object.keys(this.element.value)[0]=="motion"){
           temp=this.element.value.motion;
           temp=temp.reverse();
           temp.forEach(element => {
-            this.motionArry.push({user:{ name: 'Camera 1', picture: 'assets/images/motion.png'}, type: 'motion', time: element.timestamp});
+            this.motionArry.push({user:{ name: 'Camera #1', picture: 'assets/images/motion.png'}, type: 'motion', time: element.timestamp});
             
               
           });
