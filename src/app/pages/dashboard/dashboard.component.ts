@@ -91,6 +91,7 @@ export class DashboardComponent implements OnDestroy,OnInit {
  //Include xxxx
  wikiList: AngularFireList<any>;
  wikis: any[];
+
  lastTemp : number;
  loop : number;
  element:any;
@@ -127,16 +128,18 @@ export class DashboardComponent implements OnDestroy,OnInit {
     var meterMap;
     var dTime;
     var maxV=0;
-    var fstLoop=false;
+    var meterReslt=[];
     
-    
+    var sumP:number;
     var temp;
     this.wikiList.snapshotChanges().map(actions => {
       return actions.map(action => ({ key: action.key, value: action.payload.val() }));
-      }).subscribe(items => {
+      }).subscribe(items => {  
       this.wikis = items.reverse();
       this.doorArry=[];
       this.motionArry=[];
+      meterReslt=[];
+      console.log("sync");
       for(this.loop=0;this.loop<this.wikis.length;this.loop++){
         this.element=this.wikis[this.loop];
         if (Object.keys(this.element.value)[0]=="env"){
@@ -154,14 +157,15 @@ export class DashboardComponent implements OnDestroy,OnInit {
           break
         }
       }
-      fstLoop=true;
-      for(this.loop=0;this.loop<this.wikis.length;this.loop++){
+     
+ 
+      for(this.loop=this.wikis.length-1;this.loop>-1;this.loop--){
         this.element=this.wikis[this.loop];
         
         if (Object.keys(this.element.value)[0]=="meter"){
-
+          
           meterArry=this.element.value.meter;
-          if (fstLoop){
+          if (this.loop==0){
            
             DataDate=Date.parse(meterArry[meterArry.length-1].timestamp);
             currentDate=new Date().getTime();
@@ -171,21 +175,23 @@ export class DashboardComponent implements OnDestroy,OnInit {
             }else{
               this.rollerShadesCard.on=true;
             }
-            fstLoop=false;
+           
           }
           meterArry.forEach(element => {
-            if(maxV<(element.value[0]+element.value[1]+element.value[2]).toFixed(2)){
-              maxV=(element.value[0]+element.value[1]+element.value[2]).toFixed(2);
+            sumP=Number(element.value[0]+element.value[1]+element.value[2]);
+            if(maxV<sumP){
+       
+              maxV=sumP;
+            
             }
+            meterReslt.push(sumP.toFixed(2));
           });
-         
-          meterMap=meterArry.map((p, index) => ({
-            label: index,
-            value: (p.value[0]+p.value[1]+p.value[2]).toFixed(2),
-          }));
-          
-          
-        }else if (Object.keys(this.element.value)[0]=="door"){
+                   
+        }
+      }
+      for(this.loop=0;this.loop<this.wikis.length;this.loop++){
+        this.element=this.wikis[this.loop];  
+        if (Object.keys(this.element.value)[0]=="door"){
           temp=this.element.value.door;
           temp=temp.reverse();
           temp.forEach(element => {
@@ -196,17 +202,20 @@ export class DashboardComponent implements OnDestroy,OnInit {
           temp=this.element.value.motion;
           temp=temp.reverse();
           temp.forEach(element => {
-            this.motionArry.push({user:{ name: 'Camera #1', picture: 'assets/images/motion.png'}, type: 'motion', time: element.timestamp});
-            
-              
+            this.motionArry.push({user:{ name: 'Camera #1', picture: 'assets/images/motion.png'}, type: 'motion', time: element.timestamp});    
           });
         }
         
       }
-     
+      meterMap=meterReslt.map((p, index) => ({
+        label: index,
+        value: p,
+      }));
+    
+      //console.log(meterReslt);
       this.securityCamerasService.changeMessage("change"); 
       this.userService.changeMessage([this.doorArry,this.motionArry]);
-      this.electricityService.changeMessage([meterMap,maxV]);
+      this.electricityService.changeMessage([meterMap,maxV.toFixed(2)]);
       
       });
       
