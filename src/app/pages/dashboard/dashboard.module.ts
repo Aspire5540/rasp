@@ -32,7 +32,7 @@ import { TrafficChartComponent } from './traffic/traffic-chart.component';
 import { FormsModule } from '@angular/forms';
 
 import { AngularFireModule} from 'angularfire2';
-import { firebaseConfig } from '../../../environments/environment';
+import {firebaseConfig} from '../../../environments/environment';
 import { AngularFireDatabaseModule} from 'angularfire2/database';
 @NgModule({
   imports: [

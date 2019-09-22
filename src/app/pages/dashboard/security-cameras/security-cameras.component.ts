@@ -13,12 +13,12 @@ import { Camera, SecurityCamerasData } from '../../../@core/data/security-camera
 export class SecurityCamerasComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
-
+  urlImage='http://127.0.0.1/rasp/camera1.jpg';
   cameras: Camera[];
   selectedCamera: Camera;
-  isSingleView = false;
+  isSingleView = true;
   actionSize: NbComponentSize = 'medium';
-
+  imToggle=true;
   constructor(
     private themeService: NbThemeService,
     private breakpointService: NbMediaBreakpointsService,
@@ -31,6 +31,7 @@ export class SecurityCamerasComponent implements OnInit, OnDestroy {
       .subscribe((cameras: Camera[]) => {
         this.cameras = cameras;
         this.selectedCamera = this.cameras[0];
+        
       });
 
     const breakpoints = this.breakpointService.getBreakpointsMap();
@@ -39,6 +40,9 @@ export class SecurityCamerasComponent implements OnInit, OnDestroy {
       .subscribe((width: number) => {
         this.actionSize = width > breakpoints.md ? 'medium' : 'small';
       });
+    this.securityCamerasService.currentMessage.subscribe(msg=>{
+        this.changeImage();
+      })
   }
 
   ngOnDestroy() {
@@ -49,5 +53,14 @@ export class SecurityCamerasComponent implements OnInit, OnDestroy {
   selectCamera(camera: any) {
     this.selectedCamera = camera;
     this.isSingleView = true;
+    
+  }
+  changeImage(){
+    if (this.imToggle){
+    this.cameras[0].source='http://127.0.0.1/rasp/camera2.jpg'
+  }else{
+    this.cameras[0].source='http://127.0.0.1/rasp/camera1.jpg'
+  }
+    this.imToggle=!this.imToggle;
   }
 }

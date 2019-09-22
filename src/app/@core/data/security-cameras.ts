@@ -7,4 +7,6 @@ export interface Camera {
 
 export abstract class SecurityCamerasData {
   abstract getCamerasData(): Observable<Camera[]>;
+  abstract changeMessage(msg);
+  abstract currentMessage;
 }

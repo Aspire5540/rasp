@@ -7,6 +7,7 @@ import 'rxjs/add/operator/map'
 import { TemperatureHumidityData} from '../../@core/data/temperature-humidity';
 import {ElectricityData} from '../../@core/data/electricity';
 import {UserData} from '../../@core/data/users';
+import {SecurityCamerasData} from '../../@core/data/security-cameras';
 interface CardSettings {
   title: string;
   iconClass: string;
@@ -98,7 +99,7 @@ export class DashboardComponent implements OnDestroy,OnInit {
  motionArry=[];
 
   constructor(private electricityService: ElectricityData,private temperatureHumidityService: TemperatureHumidityData,private db: AngularFireDatabase,private themeService: NbThemeService,
-              private solarService: SolarData,private userService: UserData
+              private solarService: SolarData,private userService: UserData,private securityCamerasService: SecurityCamerasData,
               ) {
 
     this.wikiList = db.list('PEA/substation/team_03');
@@ -183,6 +184,7 @@ export class DashboardComponent implements OnDestroy,OnInit {
             value: (p.value[0]+p.value[1]+p.value[2]).toFixed(2),
           }));
           
+          
         }else if (Object.keys(this.element.value)[0]=="door"){
           temp=this.element.value.door;
           temp=temp.reverse();
@@ -201,7 +203,8 @@ export class DashboardComponent implements OnDestroy,OnInit {
         }
         
       }
-      
+     
+      this.securityCamerasService.changeMessage("change"); 
       this.userService.changeMessage([this.doorArry,this.motionArry]);
       this.electricityService.changeMessage([meterMap,maxV]);
       
